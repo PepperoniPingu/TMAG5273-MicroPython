@@ -3,7 +3,7 @@
 
 TMAG5273-MicroPython is a MicroPython library for the [TMAG5273 3 axis hall effect sensor](https://www.sparkfun.com/products/23880).
 
-This library supports the most common funationality of the TMAG5273. If your application requires hte more advanced features, please make an issue, make a PR, or contact me.
+This library supports the most common funationality of the TMAG5273. If your application requires the more advanced features, please make an issue, make a PR, or contact me.
 
 ## XRP Robot Setup Guide ##
 1) Upload `TMAG5273.py` to your XRP robot
