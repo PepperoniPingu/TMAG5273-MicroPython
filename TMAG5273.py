@@ -81,10 +81,15 @@ TMAG_REG_LAYOUT_SENSOR_CONFIG_2 = {
     "X_Y_RANGE"      : BFUINT8 | 1 << BF_POS | 1 << BF_LEN,
     "Z_RANGE"        : BFUINT8 | 0 << BF_POS | 1 << BF_LEN,
 }
+TMAG_REG_LAYOUT_T_CONFIG = {
+    "T_THR_CONFIG"  : BFUINT8 | 1 << BF_POS | 7 << BF_LEN,
+    "T_CH_EN"       : BFUINT8 | 0 << BF_POS | 1 << BF_LEN,
+}
 TMAG_REG_LAYOUT_DEVICE_ID = {
     "RESERVED"  : BFUINT8 | 2 << BF_POS | 6 << BF_LEN,
     "VER"       : BFUINT8 | 0 << BF_POS | 2 << BF_LEN,
 }
+
 
 """
 	Dictionaries for possible register settings
@@ -153,11 +158,13 @@ class HallSensor():
         self.reg_byte_device_config_2  = bytearray(1)
         self.reg_byte_sensor_config_1  = bytearray(1)
         self.reg_byte_sensor_config_2  = bytearray(1)
+        self.reg_byte_t_config         = bytearray(1)
         self.reg_byte_device_id        = bytearray(1)
         self.reg_bits_device_config_1  = struct(addressof(self.reg_byte_device_config_1), TMAG_REG_LAYOUT_DEVICE_CONFIG_1)
         self.reg_bits_device_config_2  = struct(addressof(self.reg_byte_device_config_2), TMAG_REG_LAYOUT_DEVICE_CONFIG_2)
         self.reg_bits_sensor_config_1  = struct(addressof(self.reg_byte_sensor_config_1), TMAG_REG_LAYOUT_SENSOR_CONFIG_1)
         self.reg_bits_sensor_config_2  = struct(addressof(self.reg_byte_sensor_config_2), TMAG_REG_LAYOUT_SENSOR_CONFIG_2)
+        self.reg_bits_t_config         = struct(addressof(self.reg_byte_t_config), TMAG_REG_LAYOUT_T_CONFIG)
         self.reg_bits_device_id        = struct(addressof(self.reg_byte_device_id), TMAG_REG_LAYOUT_DEVICE_ID)
 
         # Check if the MAG is connected
@@ -166,7 +173,7 @@ class HallSensor():
             pass
         
         self.set_magnetic_channel('X_Y_Z_ENABLE')
-        #set_temperature_enabled(True)
+        self.set_temperature_enabled(True)
         self.set_operating_mode('CONTINUOUS_MEASURE_MODE')
 
         #Set the axis ranges for the device to be the largest
@@ -235,8 +242,19 @@ class HallSensor():
         self._setreg(TMAG_REG_SENSOR_CONFIG_1, self.reg_byte_sensor_config_1[0])
 
     def set_temperature_enabled(self, value):
-        # Implementation to enable or disable the temperature measurement
-        pass
+        """
+        Set which magnetometer channels are enabled
+        """
+        # Get register value
+        self.reg_byte_t_config[0] = self._getreg(TMAG_REG_T_CONFIG)
+
+        # Set value as requested
+        if(value):
+            self.reg_bits_t_config.T_CH_EN = 0x01
+        else:
+            self.reg_bits_t_config.T_CH_EN = 0x00
+
+        self._setreg(TMAG_REG_T_CONFIG, self.reg_byte_t_config[0])
 
     def set_operating_mode(self, value):
         """
@@ -272,6 +290,25 @@ class HallSensor():
         self.reg_bits_sensor_config_2.Z_RANGE = X_Y_Z_RANGES[value]
         self._setreg(TMAG_REG_SENSOR_CONFIG_2, self.reg_byte_sensor_config_2[0])
         self.range_val_z = self.reg_bits_sensor_config_2.Z_RANGE
+
+
+    def get_temp(self):
+        """
+        :return: The current reading for the magnetometer's temperature sensor in Celcius
+        :rtype: floa
+        """
+        raw_LSB = self._getreg(TMAG_REG_T_LSB_RESULT)
+        raw_MSB = self._getreg(TMAG_REG_T_MSB_RESULT)
+        
+        raw_t = self._uint16_to_int16((raw_MSB << 8) + raw_LSB)
+
+        T_SNS_T0 = 25
+        T_ADC_T0 = 17508
+        T_ADC_RES = 60.1
+        
+        temp_celcius = T_SNS_T0 + ((raw_t - T_ADC_T0) / T_ADC_RES)
+        
+        print(f"rawmsb: {raw_MSB:>8.3f}     rawlsb: {raw_LSB:>8.3f}   celcius: {temp_celcius:>8.3f}")
 
 
     def get_mag_x(self):

@@ -1,26 +1,17 @@
-# PestoLink-MicroPython
+# TMAG5273-MicroPython
 *v1.0.0*
 
-PestoLink-MicroPython is a MicroPython script that runs on an XRP robot. By using the web app [PestoLink-Online](https://pestol.ink) you can connect to your robot with BLE (Bluetooth Low Energy) and drive the robot wirelessly.
+TMAG5273-MicroPython is a MicroPython library for the [TMAG5273 3 axis hall effect sensor](https://www.sparkfun.com/products/23880).
 
-You can drive using mobile or desktop. On desktop, you can drive with your keyboard or a gamepad (like an xbox controller or PS4 controller).
+This library supports the most common funationality of the TMAG5273. If your application requires hte more advanced features, please make an issue, make a PR, or contact me.
 
 ## XRP Robot Setup Guide ##
-1) Your robot needs to use MicroPython version 1.21 or later
-	- If your MicroPython version is less than that, then follow [these instructions to update it](https://micropython.org/download/RPI_PICO_W/)
-
-1) Upload `pestolink.py` to your XRP robot
-	- [Click here](https://github.com/AlfredoSystems/PestoLink-MicroPython/archive/refs/heads/main.zip) to download this repository. After that, unzip it
+1) Upload `TMAG5273.py` to your XRP robot
+	- [Click here](https://github.com/AlfredoSystems/TMAG5273-MircoPython/archive/refs/heads/main.zip) to download this repository. After that, unzip it
 	- Connect to your robot with the [XRP code editor](https://xrpcode.wpi.edu/)
-	- In the XRP Code editor, go to `file > Upload to XRP` and select `pestolink.py` from the repo you just downloaded
-	- Save the file in the \lib folder, so that `FINAL PATH: /lib/pestolink.py`
+	- In the XRP Code editor, go to `file > Upload to XRP` and select `TMAG5273.py` from the repo you just downloaded
+	- Save the file in the \lib folder, so that `FINAL PATH: /lib/TMAG5273.py`
 
-1) Upload `pestolink_example.py` to your XRP robot
-	- In the XRP Code editor, go to `file > Upload to XRP` and select `pestolink_example.py` from the repo you just downloaded
-	- Save the file at the top level, so that `FINAL PATH: /pestolink_example.py`
-
-1) Pairing and connecting
-	- Open `pestolink_example.py`, change the `robot_name` string to what you want the robot to be named for Bluetooth pairing
-	- Click the `Run` button in the top right
-	- Go to [PestoLink-Online](https://pestol.ink). You will be faced with two options, go with PestoLink-Mobile for now but you can try the gamepad version later if you want
-	- Press/click `Connect BLE`. A pairing menu will appear, find and select the robot name you chose. After the connection opens, you can now drive your robot!
+1) Upload `TMAG5273_simple_magnetometer.py` to your XRP robot
+	- In the XRP Code editor, go to `file > Upload to XRP` and select `TMAG5273_simple_magnetometer.py` from the repo you just downloaded
+	- Save the file at the top level, so that `FINAL PATH: /TMAG5273_simple_magnetometer.py`
