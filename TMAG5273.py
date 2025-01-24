@@ -226,7 +226,7 @@ class HallSensor():
         :return: True if DEVICE_ID value is correct, otherwise False
         :rtype: bool
         """
-        self.reg_byte_device_id = self._getreg(TMAG_REG_DEVICE_ID)
+        self.reg_byte_device_id[0] = self._getreg(TMAG_REG_DEVICE_ID)
 
         return (self.reg_bits_device_id.VER == 1 or self.reg_bits_device_id.VER == 2)
 
